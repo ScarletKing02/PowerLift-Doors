@@ -1,86 +1,54 @@
-// Wait until DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  // Cache DOM elements
-  const productCards = Array.from(document.querySelectorAll('.product-card'));
-  const searchInput = document.querySelector('.search-filter input[type="text"]');
-  
-  // For material and style selection we'll create arrays and state
-  const materialSelect = document.querySelector('.customization select:nth-of-type(1)');
-  const colorSelect = document.querySelector('.customization select:nth-of-type(2)');
-  const hardwareSelect = document.querySelector('.customization select:nth-of-type(3)');
-  const dimensionInput = document.querySelector('.customization input[type="text"]');
+  // Elements
+  const productCards = document.querySelectorAll('.product-card');
+  const customizationForm = document.querySelector('.customization form');
+  const materialSelect = customizationForm.querySelector('select:nth-of-type(1)');
+  const colorSelect = customizationForm.querySelector('select:nth-of-type(2)');
+  const hardwareSelect = customizationForm.querySelector('select:nth-of-type(3)');
+  const dimensionInput = customizationForm.querySelector('input[type="text"]');
   const orderSummary = document.getElementById('order-summary-text');
+  const searchInput = document.querySelector('.search-filter input[type="text"]');
 
-  // Track selections
-  let selectedStyle = null;
-  let selectedMaterial = materialSelect.value;
-  let selectedColor = colorSelect.value;
-  let selectedHardware = hardwareSelect.value;
-  let selectedDimensions = dimensionInput.value || '';
+  let selectedProduct = null;
 
-  // ----- Helper to update order summary -----
-  function updateOrderSummary() {
-    if (!selectedStyle) {
-      orderSummary.textContent = 'Please select a door style.';
-      return;
-    }
-    
-    const styleText = selectedStyle.querySelector('h3').textContent;
-    const dimensionsText = selectedDimensions ? selectedDimensions : 'Dimensions not set';
-    const colorText = selectedColor || 'Color not set';
-    const hardwareText = selectedHardware || 'Hardware not set';
-
-    orderSummary.textContent = `${styleText} - ${dimensionsText} - ${colorText} - ${hardwareText}`;
-  }
-
-  // ----- Style selection -----
+  // Select product card
   productCards.forEach(card => {
-    card.style.cursor = 'pointer'; // make it obvious it's clickable
     card.addEventListener('click', () => {
-      // Remove 'selected' class from all cards
-      productCards.forEach(c => c.classList.remove('selected'));
-      // Add 'selected' class to clicked card
+      // Only one selected product at a time
+      if (selectedProduct) {
+        selectedProduct.classList.remove('selected');
+      }
+      selectedProduct = card;
       card.classList.add('selected');
-      selectedStyle = card;
       updateOrderSummary();
     });
   });
 
-  // ----- Material, Color, Hardware change listeners -----
-  materialSelect.addEventListener('change', e => {
-    selectedMaterial = e.target.value;
-    updateOrderSummary();
+  // Update summary on customization changes
+  [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach(elem => {
+    elem.addEventListener('input', updateOrderSummary);
+    elem.addEventListener('change', updateOrderSummary);
   });
 
-  colorSelect.addEventListener('change', e => {
-    selectedColor = e.target.value;
-    updateOrderSummary();
-  });
-
-  hardwareSelect.addEventListener('change', e => {
-    selectedHardware = e.target.value;
-    updateOrderSummary();
-  });
-
-  // ----- Dimensions input -----
-  dimensionInput.addEventListener('input', e => {
-    selectedDimensions = e.target.value;
-    updateOrderSummary();
-  });
-
-  // ----- Search bar filtering -----
-  searchInput.addEventListener('input', e => {
-    const term = e.target.value.toLowerCase();
+  // Search filter for product cards by name
+  searchInput.addEventListener('input', () => {
+    const term = searchInput.value.toLowerCase();
     productCards.forEach(card => {
       const title = card.querySelector('h3').textContent.toLowerCase();
-      if (title.includes(term)) {
-        card.style.display = '';
-      } else {
-        card.style.display = 'none';
-      }
+      card.style.display = title.includes(term) ? '' : 'none';
     });
   });
 
-  // Initialize the order summary text
+  function updateOrderSummary() {
+    const productName = selectedProduct ? selectedProduct.querySelector('h3').textContent : 'No product selected';
+    const dimensions = dimensionInput.value.trim() || 'Default dimensions';
+    const material = materialSelect.value || 'Default material';
+    const color = colorSelect.value || 'No color selected';
+    const hardware = hardwareSelect.value || 'Standard hardware';
+
+    orderSummary.textContent = `${productName} - ${dimensions} - ${color} - ${hardware}`;
+  }
+
+  // Initialize order summary on page load
   updateOrderSummary();
 });
