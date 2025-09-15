@@ -11,7 +11,7 @@
   <!-- Header with Logo and Navigation -->
   <header>
     <div class="logo-title">
-      <img src="powerlift.png" alt="PowerLift Doors Logo" class="logo">
+      <img src="powerlift.png" alt="PowerLift Doors Logo" class="logo" />
       <h1>PowerLift Doors Illinois</h1>
     </div>
     <nav>
@@ -23,39 +23,38 @@
 
   <!-- Search and Filter -->
   <section class="search-filter">
-    <input type="text" placeholder="Search doors..." />
-    <select>
+    <input type="text" id="search-input" placeholder="Search doors..." />
+    <select id="material-filter">
       <option value="">Filter by Material</option>
-      <option>Steel</option>
-      <option>Wood</option>
-      <option>Aluminum</option>
+      <option value="Steel">Steel</option>
+      <option value="Wood">Wood</option>
+      <option value="Aluminum">Aluminum</option>
     </select>
-    <select>
+    <select id="style-filter">
       <option value="">Filter by Style</option>
-      <option>Barn Style</option>
-      <option>Modern</option>
-      <option>Industrial</option>
+      <option value="Barn Style">Barn Style</option>
+      <option value="Modern">Modern</option>
+      <option value="Industrial">Industrial</option>
     </select>
   </section>
 
   <!-- Product Gallery -->
   <section class="product-gallery">
-    <div class="product-card">
-      <img src="images/placeholder.jpg" alt="Door Style 1" />
+    <div class="product-card" data-style="Modern" data-material="Steel" data-name="Modern Steel Door" data-description="Durable and sleek design for modern homes.">
+      <img src="https://via.placeholder.com/250x150" alt="Modern Steel Door" />
       <h3>Modern Steel Door</h3>
       <p>Durable and sleek design for modern homes.</p>
     </div>
-    <div class="product-card">
-      <img src="images/placeholder.jpg" alt="Door Style 2" />
+    <div class="product-card" data-style="Barn Style" data-material="Wood" data-name="Barn Style Door" data-description="Rustic look with heavy-duty performance.">
+      <img src="https://via.placeholder.com/250x150" alt="Barn Style Door" />
       <h3>Barn Style Door</h3>
       <p>Rustic look with heavy-duty performance.</p>
     </div>
-    <div class="product-card">
-      <img src="images/placeholder.jpg" alt="Door Style 3" />
+    <div class="product-card" data-style="Industrial" data-material="Aluminum" data-name="Industrial Aluminum Door" data-description="Lightweight and corrosion-resistant.">
+      <img src="https://via.placeholder.com/250x150" alt="Industrial Aluminum Door" />
       <h3>Industrial Aluminum Door</h3>
       <p>Lightweight and corrosion-resistant.</p>
     </div>
-    <!-- Add more product cards as needed -->
   </section>
 
   <!-- Customization Options -->
@@ -63,31 +62,29 @@
     <h2>Customize Your Door</h2>
     <form>
       <label>Dimensions:
-        <input type="text" placeholder="e.g., 8ft x 10ft" />
+        <input type="text" id="dimension-input" placeholder="e.g., 8ft x 10ft" />
       </label>
       <label>Material:
-        <select>
-          <option value="">Select Material</option>
-          <option>Steel</option>
-          <option>Wood</option>
-          <option>Aluminum</option>
+        <select id="material-select">
+          <option value="Steel">Steel</option>
+          <option value="Wood">Wood</option>
+          <option value="Aluminum">Aluminum</option>
         </select>
       </label>
       <label>Color:
-        <select>
+        <select id="color-select">
           <option value="">Select a color</option>
           <option value="Black">Black</option>
           <option value="White">White</option>
           <option value="Gray">Gray</option>
           <option value="Red">Red</option>
           <option value="Blue">Blue</option>
-          <!-- Add or remove colors as needed -->
         </select>
       </label>
       <label>Hardware:
-        <select>
-          <option>Standard</option>
-          <option>Heavy Duty</option>
+        <select id="hardware-select">
+          <option value="Standard">Standard</option>
+          <option value="Heavy Duty">Heavy Duty</option>
         </select>
       </label>
     </form>
@@ -96,7 +93,7 @@
   <!-- Checkout Section -->
   <section class="checkout">
     <h2>Order Summary</h2>
-    <p id="order-summary-text">No product selected - Default dimensions - No color selected - Standard hardware</p>
+    <p id="order-summary-text">No product selected</p>
     <button>Proceed to Checkout</button>
   </section>
 
