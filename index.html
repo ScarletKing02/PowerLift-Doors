@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PowerLift Doors Illinois</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-   <!-- Header with Logo and Navigation -->
+  <!-- Header with Logo and Navigation -->
   <header>
     <div class="logo-title">
       <img src="powerlift.png" alt="PowerLift Doors Logo" class="logo">
@@ -25,11 +25,10 @@
   <section class="search-filter">
     <input type="text" placeholder="Search doors..." />
     <select>
-      <option>Filter by Building Material</option>
+      <option>Filter by Material</option>
       <option>Steel</option>
       <option>Wood</option>
       <option>Aluminum</option>
-      <option>Concrete</option>
     </select>
     <select>
       <option>Filter by Style</option>
@@ -51,7 +50,12 @@
       <h3>Barn Style Door</h3>
       <p>Rustic look with heavy-duty performance.</p>
     </div>
-    <!-- Add more product cards -->
+    <div class="product-card">
+      <img src="images/placeholder.jpg" alt="Door Style 3" />
+      <h3>Industrial Aluminum Door</h3>
+      <p>Lightweight and corrosion-resistant.</p>
+    </div>
+    <!-- Add more product cards as needed -->
   </section>
 
   <!-- Customization Options -->
@@ -61,27 +65,33 @@
       <label>Dimensions:
         <input type="text" placeholder="e.g., 8ft x 10ft" />
       </label>
-      <label>Building Material:
+      <label>Material:
         <select>
           <option>Steel</option>
           <option>Wood</option>
           <option>Aluminum</option>
-          <option>Concrete</option>
         </select>
-      </label>
-      <label>Color:
-        <input type="color" />
+        <label>Color:
+  <select>
+    <option value="">Select a color</option>
+    <option value="black">Black</option>
+    <option value="white">White</option>
+    <option value="gray">Gray</option>
+    <option value="red">Red</option>
+    <option value="blue">Blue</option>
+    <!-- Add or remove colors as needed -->
+  </select>
       </label>
       <label>Hardware:
         <select>
-          <option>Standard Hydraulic Cylinder</option>
-          <option>Standard Electric Cylinder</option>
+          <option>Standard</option>
+          <option>Heavy Duty</option>
         </select>
       </label>
     </form>
   </section>
 
-  <!-- Checkout Process -->
+  <!-- Checkout Section -->
   <section class="checkout">
     <h2>Order Summary</h2>
     <p>Custom Steel Door - 8ft x 10ft - Black - Standard Hardware</p>
@@ -95,6 +105,3 @@
 
 </body>
 </html>
-
-
-
