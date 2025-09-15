@@ -1,3 +1,4 @@
+console.log("script.js loaded!");
 document.addEventListener('DOMContentLoaded', () => {
   // Elements
   const productCards = document.querySelectorAll('.product-card');
