@@ -71,6 +71,8 @@ nav a:hover {
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, border 0.3s ease;
 }
 
 .product-card img {
@@ -79,6 +81,7 @@ nav a:hover {
   object-fit: cover;
   margin-bottom: 10px;
 }
+
 .product-card.selected {
   border: 3px solid #0057d9;
   box-shadow: 0 0 10px rgba(0, 87, 217, 0.7);
