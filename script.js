@@ -1,5 +1,4 @@
 console.log("script.js loaded!");
-
 document.addEventListener('DOMContentLoaded', () => {
   const productCards = document.querySelectorAll('.product-card');
   const materialSelect = document.getElementById('material-select');
@@ -10,8 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('search-input');
   const materialFilter = document.getElementById('material-filter');
   const styleFilter = document.getElementById('style-filter');
+  const form = document.querySelector('form');
 
   let selectedProduct = null;
+
+  // Prevent form submission from reloading page
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    updateOrderSummary();
+  });
 
   // Product selection logic
   productCards.forEach(card => {
@@ -37,17 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Update order summary on customization changes
-  dimensionInput.addEventListener('input', updateOrderSummary);
-  [materialSelect, colorSelect, hardwareSelect].forEach(el => {
-    el.addEventListener('change', updateOrderSummary);
+  [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach(el => {
+    el.addEventListener('input', updateOrderSummary);
   });
 
   // Search and filtering
-  searchInput.addEventListener('input', filterProducts);
-  [materialFilter, styleFilter].forEach(el => {
-    el.addEventListener('change', filterProducts);
-  });
-
   function filterProducts() {
     const searchValue = searchInput.value.toLowerCase();
     const materialValue = materialFilter.value;
@@ -77,6 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  [searchInput, materialFilter, styleFilter].forEach(el => {
+    el.addEventListener('input', filterProducts);
+  });
+
   function clearCustomization() {
     dimensionInput.value = '';
     materialSelect.value = '';
@@ -95,12 +99,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const color = colorSelect.value || 'N/A';
     const hardware = hardwareSelect.value || 'N/A';
 
-    orderSummaryText.innerHTML = 
-      `Product: ${selectedProduct.name}<br>` +
-      `Style: ${selectedProduct.style}<br>` +
-      `Dimensions: ${dimensions}<br>` +
-      `Material: ${material}<br>` +
-      `Color: ${color}<br>` +
+    orderSummaryText.textContent =
+      `Product: ${selectedProduct.name}\n` +
+      `Style: ${selectedProduct.style}\n` +
+      `Dimensions: ${dimensions}\n` +
+      `Material: ${material}\n` +
+      `Color: ${color}\n` +
       `Hardware: ${hardware}`;
   }
 });
