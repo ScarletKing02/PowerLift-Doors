@@ -10,6 +10,7 @@ body {
   line-height: 1.6;
   background-color: #f9f9f9;
   padding: 20px;
+  font-size: 16px;
 }
 
 /* Header */
@@ -56,6 +57,7 @@ nav a:hover {
 .search-filter select {
   padding: 8px;
   flex: 1 1 200px;
+  min-width: 150px;
 }
 
 /* Product Gallery */
@@ -126,4 +128,59 @@ button:hover {
 footer {
   text-align: center;
   margin-top: 40px;
+}
+
+/* Accessibility: focus styles */
+input:focus, select:focus, button:focus, .product-card:focus {
+  outline: 2px solid #0057d9;
+  outline-offset: 2px;
+}
+
+/* Mobile Friendly: Responsive tweaks */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  nav {
+    width: 100%;
+  }
+
+  nav a {
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 15px;
+    padding: 8px 0;
+  }
+
+  .search-filter {
+    flex-direction: column;
+  }
+
+  .search-filter input,
+  .search-filter select {
+    flex: 1 1 100%;
+    min-width: unset;
+  }
+
+  .product-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .customization,
+  .checkout {
+    padding: 15px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px 0;
+  }
 }
