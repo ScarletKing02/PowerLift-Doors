@@ -9,7 +9,7 @@
 <body>
   <header>
     <div class="logo-title">
-      <img src="powerlift.png" alt="PowerLift Doors Logo" class="logo">
+      <img src="powerlift.png" alt="PowerLift Logo" class="logo">
       <h1>PowerLift Doors</h1>
     </div>
     <nav>
@@ -20,38 +20,40 @@
   </header>
 
   <main>
-    <section class="search-filter">
+    <!-- Search and Filters -->
+    <div class="search-filter">
       <form id="search-form">
-        <input type="text" id="search-input" placeholder="Search doors...">
+        <input type="text" id="search-input" placeholder="Search door styles...">
         <button type="submit">Search</button>
       </form>
 
       <select id="sort-select">
-        <option value="" disabled selected>Sort by</option>
+        <option value="">Sort by</option>
         <option value="name">Name</option>
         <option value="price">Price</option>
       </select>
 
       <select id="material-filter">
-        <option value="" selected disabled>Filter by Material</option>
-        <option value="wood">Wood</option>
-        <option value="metal">Metal</option>
-        <option value="other">Other</option>
+        <option value="">Filter by material</option>
+        <option value="Wood">Wood</option>
+        <option value="Metal">Metal</option>
+        <option value="Other">Other</option>
       </select>
-    </section>
+    </div>
 
-    <div id="status-message" aria-live="polite"></div>
+    <p id="status-message" aria-live="polite">It's just us chickens here.</p>
+
     <div id="products-grid" class="product-gallery"></div>
 
-    <section class="customization">
+    <!-- Customization Panel -->
+    <div class="customization">
       <h2>Customization</h2>
-      <label>
-        Dimensions:
-        <input type="text" id="dimension-input" placeholder="Width x Height (ft)">
+
+      <label for="dimension-input">Dimensions (ft):
+        <input type="text" id="dimension-input" placeholder="Width x Height">
       </label>
 
-      <label>
-        Material:
+      <label for="material-select">Material:
         <select id="material-select">
           <option value="" selected disabled>Select material</option>
           <option value="Wood">Wood</option>
@@ -61,8 +63,7 @@
         </select>
       </label>
 
-      <label>
-        Color:
+      <label for="color-select">Color:
         <select id="color-select">
           <option value="" selected disabled>Select color</option>
           <option value="Red">Red</option>
@@ -73,23 +74,23 @@
         </select>
       </label>
 
-      <label>
-        Hardware:
+      <label for="hardware-select">Hardware:
         <select id="hardware-select">
           <option value="" selected disabled>Select hardware</option>
-          <option value="Windows">Windows</option>
-          <option value="Insulation">Insulation</option>
-          <option value="Remote Opener">Remote Opener</option>
+          <option value="Standard">Standard</option>
+          <option value="Premium">Premium</option>
+          <option value="Hydraulic">Hydraulic</option>
         </select>
       </label>
 
       <button id="add-to-build" type="button">Add to Build</button>
+
       <pre id="order-summary-text">No product selected</pre>
-    </section>
+    </div>
   </main>
 
   <footer>
-    &copy; 2025 PowerLift Doors Illinois
+    <p>&copy; 2025 PowerLift Doors Illinois</p>
   </footer>
 
   <script src="script.js"></script>
