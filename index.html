@@ -19,75 +19,79 @@
     </nav>
   </header>
 
-  <section class="search-filter">
-    <form id="search-form">
-      <input type="text" id="search-input" placeholder="Search for door styles...">
-      <button type="submit">Search</button>
-    </form>
+  <main>
+    <section class="search-filter">
+      <form id="search-form">
+        <input type="text" id="search-input" placeholder="Search doors...">
+        <button type="submit">Search</button>
+      </form>
 
-    <select id="sort-select">
-      <option value="">Sort by</option>
-      <option value="name">Name A→Z</option>
-      <option value="price">Price Low→High</option>
-    </select>
-
-    <select id="material-filter">
-      <option value="">Filter by Material</option>
-      <option value="wood">Wood</option>
-      <option value="metal">Metal</option>
-      <option value="other">Other</option>
-    </select>
-  </section>
-
-  <div id="status-message" aria-live="polite"></div>
-
-  <section class="product-gallery" id="products-grid">
-    <!-- Products will be rendered here -->
-  </section>
-
-  <section class="customization">
-    <h2>Customization</h2>
-    <label>
-      Dimensions (WxH feet):
-      <input type="text" id="dimension-input" placeholder="e.g., 3x7">
-    </label>
-    <label>
-      Material:
-      <select id="material-select">
-        <option value="Wood">Wood</option>
-        <option value="Steel">Steel</option>
-        <option value="Aluminum">Aluminum</option>
-        <option value="Other">Other</option>
+      <select id="sort-select">
+        <option value="" disabled selected>Sort by</option>
+        <option value="name">Name</option>
+        <option value="price">Price</option>
       </select>
-    </label>
-    <label>
-      Color:
-           <select id="hardware-select">
-        <option "Select color" </option>
-        <option "Red" </option>
-        <option "Yellow" </option>
-        <option "Blue" </option>
-        <option "Black" </option>
-      </select>
-    </label>
-    <label>
-      Hardware:
-      <select id="hardware-select">
-        <option value="Select type">Windows</option>
-        <option value="Standard">Insulation</option>
-        <option value="Premium">Remote Opener</option>
-      </select>
-    </label>
 
-    <button id="add-to-build">Add to Build</button>
-    <pre id="order-summary-text">No product selected</pre>
-  </section>
+      <select id="material-filter">
+        <option value="" selected disabled>Filter by Material</option>
+        <option value="wood">Wood</option>
+        <option value="metal">Metal</option>
+        <option value="other">Other</option>
+      </select>
+    </section>
+
+    <div id="status-message" aria-live="polite"></div>
+    <div id="products-grid" class="product-gallery"></div>
+
+    <section class="customization">
+      <h2>Customization</h2>
+      <label>
+        Dimensions:
+        <input type="text" id="dimension-input" placeholder="Width x Height (ft)">
+      </label>
+
+      <label>
+        Material:
+        <select id="material-select">
+          <option value="" selected disabled>Select material</option>
+          <option value="Wood">Wood</option>
+          <option value="Steel">Steel</option>
+          <option value="Aluminum">Aluminum</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+
+      <label>
+        Color:
+        <select id="color-select">
+          <option value="" selected disabled>Select color</option>
+          <option value="Red">Red</option>
+          <option value="Yellow">Yellow</option>
+          <option value="Blue">Blue</option>
+          <option value="Black">Black</option>
+          <option value="White">White</option>
+        </select>
+      </label>
+
+      <label>
+        Hardware:
+        <select id="hardware-select">
+          <option value="" selected disabled>Select hardware</option>
+          <option value="Windows">Windows</option>
+          <option value="Insulation">Insulation</option>
+          <option value="Remote Opener">Remote Opener</option>
+        </select>
+      </label>
+
+      <button id="add-to-build" type="button">Add to Build</button>
+      <pre id="order-summary-text">No product selected</pre>
+    </section>
+  </main>
 
   <footer>
-    <p>&copy; 2025 PowerLift Doors Illinois</p>
+    &copy; 2025 PowerLift Doors Illinois
   </footer>
 
   <script src="script.js"></script>
 </body>
 </html>
-
