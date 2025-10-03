@@ -1,105 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PowerLift Doors Illinois</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- Header with Logo and Navigation -->
   <header>
     <div class="logo-title">
       <img src="powerlift.png" alt="PowerLift Doors Logo" class="logo" />
       <h1>PowerLift Doors Illinois</h1>
     </div>
-    <nav>
+    <nav aria-label="Main navigation">
       <a href="#">Home</a>
       <a href="#">Products</a>
       <a href="#">Contact</a>
     </nav>
   </header>
 
-  <!-- Search and Filter -->
-  <section class="search-filter">
-    <input type="text" id="search-input" placeholder="Search doors..." />
-    <select id="material-filter">
-      <option value="">Filter by Material</option>
-      <option value="Steel">Steel</option>
-      <option value="Wood">Wood</option>
-      <option value="Aluminum">Aluminum</option>
-    </select>
-    <select id="style-filter">
-      <option value="">Filter by Style</option>
-      <option value="Barn Style">Barn Style</option>
-      <option value="Modern">Modern</option>
-      <option value="Industrial">Industrial</option>
-    </select>
-  </section>
+  <main>
+    <!-- Controls Bar -->
+    <section class="controls-bar" aria-labelledby="controls-heading">
+      <h2 id="controls-heading" class="sr-only">Search and Filters</h2>
 
-  <!-- Product Gallery -->
-  <section class="product-gallery">
-    <div class="product-card" data-style="Modern" data-material="Steel" data-name="Modern Steel Door" data-description="Durable and sleek design for modern homes.">
-      <img src="https://via.placeholder.com/250x150" alt="Modern Steel Door" />
-      <h3>Modern Steel Door</h3>
-      <p>Durable and sleek design for modern homes.</p>
-    </div>
-    <div class="product-card" data-style="Barn Style" data-material="Wood" data-name="Barn Style Door" data-description="Rustic look with heavy-duty performance.">
-      <img src="https://via.placeholder.com/250x150" alt="Barn Style Door" />
-      <h3>Barn Style Door</h3>
-      <p>Rustic look with heavy-duty performance.</p>
-    </div>
-    <div class="product-card" data-style="Industrial" data-material="Aluminum" data-name="Industrial Aluminum Door" data-description="Lightweight and corrosion-resistant.">
-      <img src="https://via.placeholder.com/250x150" alt="Industrial Aluminum Door" />
-      <h3>Industrial Aluminum Door</h3>
-      <p>Lightweight and corrosion-resistant.</p>
-    </div>
-  </section>
+      <div class="search-row">
+        <label for="search-input" class="sr-only">Search door styles</label>
+        <input id="search-input" type="search" placeholder="Search door styles (e.g., wood, metal)" />
+        <button id="search-button" type="button">Search</button>
 
-  <!-- Customization Options -->
-  <section class="customization">
-    <h2>Customize Your Door</h2>
-    <form>
-      <label>Dimensions:
-        <input type="text" id="dimension-input" placeholder="e.g., 8ft x 10ft" />
-      </label>
-      <label>Material:
-        <select id="material-select">
-          <option value="" disabled selected>Select Material</option>
-          <option value="Steel">Steel</option>
+        <label for="sort-select">Sort:</label>
+        <select id="sort-select" aria-label="Sort results">
+          <option value="relevance">Relevance</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
+
+        <label for="material-filter">Material:</label>
+        <select id="material-filter" aria-label="Filter by material">
+          <option value="">All</option>
           <option value="Wood">Wood</option>
-          <option value="Aluminum">Aluminum</option>
+          <option value="Steel">Steel</option>
+          <option value="Other">Other</option>
         </select>
-      </label>
-      <label>Color:
-        <select id="color-select">
-          <option value="" disabled selected>Select Color</option>
-          <option value="Black">Black</option>
-          <option value="White">White</option>
-          <option value="Gray">Gray</option>
-          <option value="Red">Red</option>
-          <option value="Blue">Blue</option>
-        </select>
-      </label>
-      <label>Hardware:
-        <select id="hardware-select">
-          <option value="" disabled selected>Select Hardware</option>
-          <option value="Standard">Standard</option>
-          <option value="Heavy Duty">Heavy Duty</option>
-        </select>
-      </label>
-    </form>
-  </section>
+      </div>
 
-  <!-- Checkout Section -->
-  <section class="checkout">
-    <h2>Order Summary</h2>
-    <p id="order-summary-text">No product selected</p>
-    <button>Proceed to Checkout</button>
-  </section>
+      <!-- status messages -->
+      <div id="status-region" aria-live="polite" class="status-region"></div>
+    </section>
 
-  <!-- Footer -->
+    <div class="layout">
+      <!-- Results / Grid -->
+      <section id="results-section" aria-labelledby="results-heading">
+        <h2 id="results-heading" class="sr-only">Search results</h2>
+
+        <!-- initial empty state -->
+        <div id="initial-state" class="state-box">
+          <p>Search for door styles to begin. Try terms like <strong>wood</strong>, <strong>metal</strong>, or <strong>home</strong>.</p>
+        </div>
+
+        <!-- loading / error / no results will replace content here -->
+        <div id="results" class="product-gallery" role="list"></div>
+      </section>
+
+      <!-- Customization Panel -->
+      <aside class="customization" aria-labelledby="customize-heading">
+        <h2 id="customize-heading">Customization</h2>
+        <form id="customization-form">
+          <fieldset>
+            <legend>Dimensions (feet)</legend>
+            <label for="width-input">Width (ft)</label>
+            <input id="width-input" type="number" min="1" max="50" step="0.5" value="8" />
+            <label for="height-input">Height (ft)</label>
+            <input id="height-input" type="number" min="1" max="30" step="0.5" value="7" />
+          </fieldset>
+
+          <fieldset>
+            <legend>Material</legend>
+            <label><input name="material" type="radio" value="Wood" checked /> Wood</label>
+            <label><input name="material" type="radio" value="Steel" /> Steel</label>
+            <label><input name="material" type="radio" value="Aluminum" /> Aluminum</label>
+            <label><input name="material" type="radio" value="Other" /> Other</label>
+          </fieldset>
+
+          <label for="color-input">Color</label>
+          <input id="color-input" type="color" value="#8B4513" />
+
+          <fieldset>
+            <legend>Hardware</legend>
+            <label><input id="hw-windows" type="checkbox" value="Windows" /> Windows</label>
+            <label><input id="hw-insulation" type="checkbox" value="Insulation" /> Insulation</label>
+            <label><input id="hw-remote" type="checkbox" value="Remote Opener" /> Remote Opener</label>
+          </fieldset>
+
+          <div class="order-summary">
+            <h3>Order Summary (Preview)</h3>
+            <p id="order-summary-text">No product selected</p>
+          </div>
+        </form>
+      </aside>
+    </div>
+  </main>
+
   <footer>
     <p>&copy; 2025 PowerLift Doors Illinois</p>
   </footer>
