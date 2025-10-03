@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       products = data.products || [];
 
       if (products.length === 0) {
-        statusMessage.textContent = "No results found.";
+        statusMessage.textContent = "It’s just us chickens here 🐔";
         return;
       }
 
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderProducts();
     } catch (err) {
       console.error(err);
-      statusMessage.textContent = "Error loading products.";
+      statusMessage.textContent = "Error loading products. Try again.";
     }
   }
 
@@ -45,9 +45,15 @@ document.addEventListener("DOMContentLoaded", () => {
     productsGrid.innerHTML = "";
     let filtered = [...products];
 
-    const materialValue = materialFilter.value;
+    const materialValue = materialFilter.value.toLowerCase();
     if (materialValue) {
-      filtered = filtered.filter(p => (p.material || "").toLowerCase() === materialValue.toLowerCase());
+      filtered = filtered.filter(p => {
+        const mat = (p.title + " " + p.description).toLowerCase();
+        if (materialValue === "wood") return mat.includes("wood");
+        if (materialValue === "metal") return mat.includes("metal") || mat.includes("steel");
+        if (materialValue === "other") return !mat.includes("wood") && !mat.includes("metal") && !mat.includes("steel");
+        return true;
+      });
     }
 
     const sortValue = sortSelect.value;
@@ -61,12 +67,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("div");
       card.className = "product-card";
       card.tabIndex = 0;
-      card.dataset.name = product.title;
-      card.dataset.description = product.description;
-      card.dataset.price = product.price;
 
       card.innerHTML = `
-        <img src="${product.thumbnail}" alt="${product.title}" />
+        <img src="${product.thumbnail}" alt="Style: ${product.title}">
         <h3>${product.title}</h3>
         <p>${product.description}</p>
         <p><strong>$${product.price}</strong></p>
@@ -81,9 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       card.addEventListener("keypress", e => {
-        if (e.key === "Enter") {
-          card.querySelector(".select-btn").click();
-        }
+        if (e.key === "Enter") card.querySelector(".select-btn").click();
       });
 
       productsGrid.appendChild(card);
@@ -125,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
       material: materialSelect.value,
       color: colorSelect.value,
       hardware: hardwareSelect.value,
+      timestamp: new Date().toISOString()
     };
 
     console.log("Add to Build:", payload);
@@ -132,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   searchForm.addEventListener("submit", e => {
-    e.preventDefault(); // ✅ prevents reload
+    e.preventDefault();
     const query = searchInput.value.trim();
     if (!query) {
       statusMessage.textContent = "Please enter a search term.";
@@ -141,11 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchProducts(query);
   });
 
-  [sortSelect, materialFilter].forEach(el => {
-    el.addEventListener("input", renderProducts);
-  });
-
-  [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach(el => {
-    el.addEventListener("input", updateOrderSummary);
-  });
+  [sortSelect, materialFilter].forEach(el => el.addEventListener("input", renderProducts));
+  [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach(el => el.addEventListener("input", updateOrderSummary));
 });
