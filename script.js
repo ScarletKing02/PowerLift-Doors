@@ -1,102 +1,151 @@
 console.log("script.js loaded!");
 
 document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("searchInput");
-  const searchButton = document.getElementById("searchButton");
-  const resultsContainer = document.getElementById("results");
+  const searchForm = document.getElementById("search-form");
+  const searchInput = document.getElementById("search-input");
+  const sortSelect = document.getElementById("sort-select");
+  const materialFilter = document.getElementById("material-filter");
+  const statusMessage = document.getElementById("status-message");
+  const productsGrid = document.getElementById("products-grid");
 
-  const customizationForm = document.getElementById("customizationForm");
-  const dimensionInput = document.getElementById("dimension-input");
   const materialSelect = document.getElementById("material-select");
   const colorSelect = document.getElementById("color-select");
   const hardwareSelect = document.getElementById("hardware-select");
+  const dimensionInput = document.getElementById("dimension-input");
+  const orderSummaryText = document.getElementById("order-summary-text");
+  const addToBuildBtn = document.getElementById("add-to-build");
 
-  const orderSummary = document.getElementById("orderSummary");
-  const productName = document.getElementById("productName");
-  const productSummary = document.getElementById("productSummary");
-  const summaryDetails = document.getElementById("summaryDetails");
-
+  let products = [];
   let selectedProduct = null;
 
-  // Fetch products from DummyJSON
-  async function searchProducts(query) {
-    resultsContainer.innerHTML = "<p>Loading...</p>";
+  async function fetchProducts(query) {
+    statusMessage.textContent = "Loading...";
+    productsGrid.innerHTML = "";
+
     try {
-      const res = await fetch(
-        `https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=20`
-      );
+      const res = await fetch(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=20`);
       if (!res.ok) throw new Error("Network response was not ok");
       const data = await res.json();
+      products = data.products || [];
 
-      if (data.products.length === 0) {
-        resultsContainer.innerHTML = "<p>No results found.</p>";
+      if (products.length === 0) {
+        statusMessage.textContent = "No results found.";
         return;
       }
 
-      renderProducts(data.products);
+      statusMessage.textContent = "";
+      renderProducts();
     } catch (err) {
       console.error(err);
-      resultsContainer.innerHTML = "<p>Error fetching products.</p>";
+      statusMessage.textContent = "Error loading products.";
     }
   }
 
-  // Render product cards
-  function renderProducts(products) {
-    resultsContainer.innerHTML = "";
-    const grid = document.createElement("div");
-    grid.classList.add("product-gallery");
+  function renderProducts() {
+    productsGrid.innerHTML = "";
+    let filtered = [...products];
 
-    products.forEach((product) => {
+    const materialValue = materialFilter.value;
+    if (materialValue) {
+      filtered = filtered.filter(p => (p.material || "").toLowerCase() === materialValue.toLowerCase());
+    }
+
+    const sortValue = sortSelect.value;
+    if (sortValue === "name") {
+      filtered.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortValue === "price") {
+      filtered.sort((a, b) => a.price - b.price);
+    }
+
+    filtered.forEach(product => {
       const card = document.createElement("div");
-      card.classList.add("product-card");
+      card.className = "product-card";
+      card.tabIndex = 0;
+      card.dataset.name = product.title;
+      card.dataset.description = product.description;
+      card.dataset.price = product.price;
+
       card.innerHTML = `
         <img src="${product.thumbnail}" alt="${product.title}" />
         <h3>${product.title}</h3>
         <p>${product.description}</p>
-        <p>$${product.price}</p>
-        <button>Add to Build</button>
+        <p><strong>$${product.price}</strong></p>
+        <button class="select-btn">Select</button>
       `;
 
-      card.querySelector("button").addEventListener("click", () => {
+      card.querySelector(".select-btn").addEventListener("click", () => {
+        document.querySelectorAll(".product-card").forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
         selectedProduct = product;
-        updateSummary();
+        updateOrderSummary();
       });
 
-      grid.appendChild(card);
-    });
+      card.addEventListener("keypress", e => {
+        if (e.key === "Enter") {
+          card.querySelector(".select-btn").click();
+        }
+      });
 
-    resultsContainer.appendChild(grid);
+      productsGrid.appendChild(card);
+    });
   }
 
-  // Update order summary
-  function updateSummary() {
-    if (!selectedProduct) return;
-    orderSummary.style.display = "block";
-    productName.textContent = selectedProduct.title;
-    productSummary.textContent = `Base price: $${selectedProduct.price}`;
+  function updateOrderSummary() {
+    if (!selectedProduct) {
+      orderSummaryText.textContent = "No product selected";
+      return;
+    }
 
     const dimensions = dimensionInput.value || "N/A";
     const material = materialSelect.value || "N/A";
     const color = colorSelect.value || "N/A";
     const hardware = hardwareSelect.value || "N/A";
 
-    summaryDetails.textContent = `Dimensions: ${dimensions}, Material: ${material}, Color: ${color}, Hardware: ${hardware}`;
-
-    // Log payload to console
-    console.log({
-      product: selectedProduct,
-      customization: { dimensions, material, color, hardware },
-    });
+    orderSummaryText.textContent =
+      `Product: ${selectedProduct.title}\n` +
+      `Description: ${selectedProduct.description}\n` +
+      `Price: $${selectedProduct.price}\n` +
+      `Dimensions: ${dimensions}\n` +
+      `Material: ${material}\n` +
+      `Color: ${color}\n` +
+      `Hardware: ${hardware}`;
   }
 
-  // Event listeners
-  searchButton.addEventListener("click", () => {
-    const query = searchInput.value.trim();
-    if (query) searchProducts(query);
+  addToBuildBtn.addEventListener("click", () => {
+    if (!selectedProduct) {
+      alert("Please select a product first!");
+      return;
+    }
+
+    const payload = {
+      product: selectedProduct.title,
+      description: selectedProduct.description,
+      price: selectedProduct.price,
+      dimensions: dimensionInput.value,
+      material: materialSelect.value,
+      color: colorSelect.value,
+      hardware: hardwareSelect.value,
+    };
+
+    console.log("Add to Build:", payload);
+    alert("Product added to build! (See console for details)");
   });
 
-  customizationForm.addEventListener("submit", (e) => {
+  searchForm.addEventListener("submit", e => {
     e.preventDefault();
-    updateSummary();
+    const query = searchInput.value.trim();
+    if (!query) {
+      statusMessage.textContent = "Please enter a search term.";
+      return;
+    }
+    fetchProducts(query);
+  });
+
+  [sortSelect, materialFilter].forEach(el => {
+    el.addEventListener("input", renderProducts);
+  });
+
+  [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach(el => {
+    el.addEventListener("input", updateOrderSummary);
   });
 });
