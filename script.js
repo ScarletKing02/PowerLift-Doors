@@ -1,126 +1,109 @@
 console.log("script.js loaded!");
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Elements
+  const productGallery = document.querySelector('.product-gallery');
+  const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
-  const searchButton = document.getElementById('search-button');
-  const resultsDiv = document.getElementById('product-gallery');
-  const statusDiv = document.getElementById('status');
-  const sortSelect = document.getElementById('sort-select');
-  const materialFilter = document.getElementById('material-filter');
+  const orderSummaryText = document.getElementById('order-summary-text');
 
-  // Customization controls
-  const dimensionWidth = document.getElementById('dimension-width');
-  const dimensionHeight = document.getElementById('dimension-height');
-  const materialSelect = document.getElementById('custom-material');
-  const colorInput = document.getElementById('custom-color');
-  const hardwareInputs = document.querySelectorAll('input[name="hardware"]');
+  const dimensionInput = document.getElementById('dimension-input');
+  const materialSelect = document.getElementById('material-select');
+  const colorSelect = document.getElementById('color-select');
+  const hardwareSelect = document.getElementById('hardware-select');
 
   let currentProducts = [];
 
-  // Fetch products from DummyJSON
+  function clearGallery() {
+    productGallery.innerHTML = '';
+  }
+
+  function showMessage(message) {
+    clearGallery();
+    const msgEl = document.createElement('p');
+    msgEl.textContent = message;
+    msgEl.style.fontSize = '1.2em';
+    msgEl.style.textAlign = 'center';
+    productGallery.appendChild(msgEl);
+  }
+
   async function fetchProducts(query) {
-    resultsDiv.innerHTML = '';
-    statusDiv.textContent = 'Loading...';
+    clearGallery();
+    showMessage('Loading...');
+
     try {
       const response = await fetch(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=20`);
-      if (!response.ok) throw new Error('Network response not ok');
+      if (!response.ok) throw new Error('Network response not OK');
       const data = await response.json();
+      const products = data.products;
 
-      if (!data.products || data.products.length === 0) {
-        statusDiv.textContent = "It's just us chickens here 🐔";
+      if (!products || products.length === 0) {
+        showMessage("It's just us chickens here");
         currentProducts = [];
         return;
       }
 
-      currentProducts = data.products.map(product => {
-        // Determine material tag
-        let material = 'Other';
-        const titleDesc = (product.title + ' ' + product.description).toLowerCase();
-        if (titleDesc.includes('wood')) material = 'Wood';
-        else if (titleDesc.includes('steel') || titleDesc.includes('metal')) material = 'Metal';
-        return { ...product, material };
-      });
-
-      statusDiv.textContent = '';
-      renderProducts(currentProducts);
+      currentProducts = products;
+      renderProducts(products);
     } catch (err) {
+      showMessage('Error fetching products. Try again.');
       console.error(err);
-      statusDiv.textContent = 'Error fetching products. Try again.';
     }
   }
 
-  // Render products
   function renderProducts(products) {
-    resultsDiv.innerHTML = '';
-    products.forEach(product => {
+    clearGallery();
+    products.forEach(prod => {
       const card = document.createElement('div');
       card.className = 'product-card';
-      card.innerHTML = `
-        <img src="${product.thumbnail}" alt="Style: ${product.title}">
-        <div class="material-badge">${product.material}</div>
-        <h3>${product.title}</h3>
-        <p class="description">${product.description}</p>
-        <p>Price: $${product.price}</p>
-        <button class="add-to-build">Add to Build</button>
-      `;
 
-      // Add to Build button
-      card.querySelector('.add-to-build').addEventListener('click', () => {
-        const selectedHardware = Array.from(hardwareInputs)
-          .filter(h => h.checked)
-          .map(h => h.value);
+      const img = document.createElement('img');
+      img.src = prod.thumbnail || prod.images?.[0] || '';
+      img.alt = `Style: ${prod.title}`;
+
+      const title = document.createElement('h3');
+      title.textContent = prod.title;
+
+      const desc = document.createElement('p');
+      desc.textContent = prod.description.length > 80 ? prod.description.slice(0, 80) + '...' : prod.description;
+
+      const price = document.createElement('p');
+      price.textContent = `$${prod.price}`;
+
+      const btn = document.createElement('button');
+      btn.textContent = 'Add to Build';
+      btn.addEventListener('click', () => {
         const payload = {
-          id: product.id,
-          title: product.title,
-          basePrice: product.price,
-          imageUrl: product.thumbnail,
+          id: prod.id,
+          title: prod.title,
+          basePrice: prod.price,
+          imageUrl: img.src,
           timestamp: new Date().toISOString(),
-          selectedOptions: {
-            width: dimensionWidth.value || 'N/A',
-            height: dimensionHeight.value || 'N/A',
-            material: materialSelect.value || product.material,
-            color: colorInput.value || 'N/A',
-            hardware: selectedHardware
+          customization: {
+            dimensions: dimensionInput.value || 'N/A',
+            material: materialSelect.value || 'N/A',
+            color: colorSelect.value || 'N/A',
+            hardware: hardwareSelect.value || 'N/A'
           }
         };
-        console.log('Add to Build payload:', payload);
+        console.log('Added to build:', payload);
+        orderSummaryText.textContent = `Product added: ${prod.title}`;
       });
 
-      resultsDiv.appendChild(card);
+      card.appendChild(img);
+      card.appendChild(title);
+      card.appendChild(price);
+      card.appendChild(desc);
+      card.appendChild(btn);
+
+      productGallery.appendChild(card);
     });
   }
 
-  // Filter by material
-  function applyFilters() {
-    let filtered = [...currentProducts];
-    const materialValue = materialFilter.value;
-    if (materialValue) {
-      filtered = filtered.filter(p => p.material === materialValue);
-    }
-
-    // Sorting
-    const sortValue = sortSelect.value;
-    if (sortValue === 'price-asc') filtered.sort((a, b) => a.price - b.price);
-    if (sortValue === 'price-desc') filtered.sort((a, b) => b.price - a.price);
-
-    renderProducts(filtered);
-  }
-
-  // Event listeners
-  searchButton.addEventListener('click', () => {
+  // Handle search form submit
+  searchForm.addEventListener('submit', (e) => {
+    e.preventDefault(); // prevent reload
     const query = searchInput.value.trim();
-    if (query) fetchProducts(query);
+    if (!query) return;
+    fetchProducts(query);
   });
-
-  searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const query = searchInput.value.trim();
-      if (query) fetchProducts(query);
-    }
-  });
-
-  sortSelect.addEventListener('change', applyFilters);
-  materialFilter.addEventListener('change', applyFilters);
 });
