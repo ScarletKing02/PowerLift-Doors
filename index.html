@@ -2,90 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Furniture Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PowerLift - Custom Gym Equipment Builder</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <div class="logo-title">
-      <img src="logo.png" alt="Logo" class="logo" />
-      <h1>Furniture Builder</h1>
+      <img src="powerlift.png" alt="PowerLift Logo" class="logo"/>
+      <h1>PowerLift</h1>
     </div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Products</a>
-      <a href="#">Contact</a>
-    </nav>
+    <p>Custom Gym Equipment Builder</p>
   </header>
 
-  <!-- Search -->
-  <section class="search-filter">
-    <input type="text" id="searchInput" placeholder="Search products..." />
-    <button id="searchButton">Search</button>
-  </section>
+  <main>
+    <section class="controls">
+      <form id="search-form">
+        <label for="search-input">Search Products:</label>
+        <input type="text" id="search-input" placeholder="Search gym equipment..." />
 
-  <!-- Results -->
-  <section id="results" aria-live="polite">
-    <p class="initial-message">Enter a search term to find products.</p>
-  </section>
-
-  <!-- Customization -->
-  <section class="customization">
-    <h2>Customize Your Build</h2>
-    <form id="customizationForm">
-      <label>
-        Dimensions
-        <input type="text" id="dimension-input" placeholder="e.g. 6ft x 3ft" />
-      </label>
-
-      <label>
-        Material
-        <select id="material-select">
-          <option value="">Select</option>
-          <option value="Wood">Wood</option>
-          <option value="Metal">Metal</option>
-          <option value="Plastic">Plastic</option>
+        <label for="sort-select">Sort By:</label>
+        <select id="sort-select">
+          <option value="name">Name</option>
+          <option value="price">Price</option>
         </select>
-      </label>
 
-      <label>
-        Color
-        <select id="color-select">
-          <option value="">Select</option>
-          <option value="Brown">Brown</option>
-          <option value="Black">Black</option>
-          <option value="White">White</option>
+        <label for="material-filter">Filter by Material:</label>
+        <select id="material-filter">
+          <option value="">All</option>
+          <option value="steel">Steel</option>
+          <option value="aluminum">Aluminum</option>
+          <option value="wood">Wood</option>
         </select>
-      </label>
 
-      <label>
-        Hardware
-        <select id="hardware-select">
-          <option value="">Select</option>
-          <option value="Steel">Steel</option>
-          <option value="Aluminum">Aluminum</option>
-          <option value="Brass">Brass</option>
-        </select>
-      </label>
+        <button type="submit">Search</button>
+      </form>
+    </section>
 
-      <button type="submit">Update Summary</button>
-    </form>
-  </section>
+    <section class="results">
+      <div id="status-message" aria-live="polite">Search to see available products.</div>
+      <div id="products-grid" class="products-grid"></div>
+    </section>
 
-  <!-- Order Summary -->
-  <section class="checkout">
-    <h2>Order Summary</h2>
-    <div id="orderSummary" style="display: none;">
-      <h3 id="productName"></h3>
-      <p id="productSummary"></p>
-      <p id="summaryDetails"></p>
-    </div>
-  </section>
+    <section class="customization">
+      <h2>Customize Your Build</h2>
+      <label for="material-select">Material:</label>
+      <select id="material-select">
+        <option value="">Select</option>
+        <option value="steel">Steel</option>
+        <option value="aluminum">Aluminum</option>
+        <option value="wood">Wood</option>
+      </select>
 
-  <footer>
-    <p>&copy; 2025 Furniture Builder</p>
-  </footer>
+      <label for="color-select">Color:</label>
+      <select id="color-select">
+        <option value="">Select</option>
+        <option value="black">Black</option>
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+      </select>
+
+      <label for="hardware-select">Hardware:</label>
+      <select id="hardware-select">
+        <option value="">Select</option>
+        <option value="standard">Standard</option>
+        <option value="premium">Premium</option>
+      </select>
+
+      <label for="dimension-input">Dimensions:</label>
+      <input type="text" id="dimension-input" placeholder="e.g., 6ft x 3ft" />
+
+      <button id="add-to-build">Add to Build</button>
+    </section>
+
+    <section class="summary">
+      <h2>Order Summary</h2>
+      <pre id="order-summary-text">No product selected</pre>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
