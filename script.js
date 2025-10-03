@@ -147,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
     el.addEventListener("input", updateOrderSummary)
   );
 
-  // 🔒 Lock placeholder only for customization dropdowns
   function lockSelect(selectElement) {
     selectElement.addEventListener("change", () => {
       const placeholder = selectElement.querySelector('option[value=""]');
