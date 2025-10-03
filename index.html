@@ -3,23 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PowerLift - Custom Gym Equipment Builder</title>
+  <title>PowerLift Doors</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <div class="logo-title">
       <img src="powerlift.png" alt="PowerLift Logo" class="logo"/>
-      <h1>PowerLift</h1>
+      <h1>PowerLift Doors</h1>
     </div>
-    <p>Custom Gym Equipment Builder</p>
   </header>
 
   <main>
     <section class="controls">
       <form id="search-form">
         <label for="search-input">Search Products:</label>
-        <input type="text" id="search-input" placeholder="Search gym equipment..." />
+        <input type="text" id="search-input" placeholder="Search doors..." />
 
         <label for="sort-select">Sort By:</label>
         <select id="sort-select">
@@ -35,6 +34,7 @@
           <option value="wood">Wood</option>
         </select>
 
+        <!-- ✅ Button type fixed -->
         <button type="submit">Search</button>
       </form>
     </section>
@@ -45,7 +45,7 @@
     </section>
 
     <section class="customization">
-      <h2>Customize Your Build</h2>
+      <h2>Customize Your Door</h2>
       <label for="material-select">Material:</label>
       <select id="material-select">
         <option value="">Select</option>
@@ -70,7 +70,7 @@
       </select>
 
       <label for="dimension-input">Dimensions:</label>
-      <input type="text" id="dimension-input" placeholder="e.g., 6ft x 3ft" />
+      <input type="text" id="dimension-input" placeholder="e.g., 10ft x 12ft" />
 
       <button id="add-to-build">Add to Build</button>
     </section>
