@@ -1,109 +1,151 @@
 console.log("script.js loaded!");
 
-document.addEventListener('DOMContentLoaded', () => {
-  const productGallery = document.querySelector('.product-gallery');
-  const searchForm = document.getElementById('search-form');
-  const searchInput = document.getElementById('search-input');
-  const orderSummaryText = document.getElementById('order-summary-text');
+document.addEventListener("DOMContentLoaded", () => {
+  const searchForm = document.getElementById("search-form");
+  const searchInput = document.getElementById("search-input");
+  const sortSelect = document.getElementById("sort-select");
+  const materialFilter = document.getElementById("material-filter");
+  const statusMessage = document.getElementById("status-message");
+  const productsGrid = document.getElementById("products-grid");
 
-  const dimensionInput = document.getElementById('dimension-input');
-  const materialSelect = document.getElementById('material-select');
-  const colorSelect = document.getElementById('color-select');
-  const hardwareSelect = document.getElementById('hardware-select');
+  const materialSelect = document.getElementById("material-select");
+  const colorSelect = document.getElementById("color-select");
+  const hardwareSelect = document.getElementById("hardware-select");
+  const dimensionInput = document.getElementById("dimension-input");
+  const orderSummaryText = document.getElementById("order-summary-text");
+  const addToBuildBtn = document.getElementById("add-to-build");
 
-  let currentProducts = [];
-
-  function clearGallery() {
-    productGallery.innerHTML = '';
-  }
-
-  function showMessage(message) {
-    clearGallery();
-    const msgEl = document.createElement('p');
-    msgEl.textContent = message;
-    msgEl.style.fontSize = '1.2em';
-    msgEl.style.textAlign = 'center';
-    productGallery.appendChild(msgEl);
-  }
+  let products = [];
+  let selectedProduct = null;
 
   async function fetchProducts(query) {
-    clearGallery();
-    showMessage('Loading...');
+    statusMessage.textContent = "Loading...";
+    productsGrid.innerHTML = "";
 
     try {
-      const response = await fetch(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=20`);
-      if (!response.ok) throw new Error('Network response not OK');
-      const data = await response.json();
-      const products = data.products;
+      const res = await fetch(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=20`);
+      if (!res.ok) throw new Error("Network response was not ok");
+      const data = await res.json();
+      products = data.products || [];
 
-      if (!products || products.length === 0) {
-        showMessage("It's just us chickens here");
-        currentProducts = [];
+      if (products.length === 0) {
+        statusMessage.textContent = "No results found.";
         return;
       }
 
-      currentProducts = products;
-      renderProducts(products);
+      statusMessage.textContent = "";
+      renderProducts();
     } catch (err) {
-      showMessage('Error fetching products. Try again.');
       console.error(err);
+      statusMessage.textContent = "Error loading products.";
     }
   }
 
-  function renderProducts(products) {
-    clearGallery();
-    products.forEach(prod => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
+  function renderProducts() {
+    productsGrid.innerHTML = "";
+    let filtered = [...products];
 
-      const img = document.createElement('img');
-      img.src = prod.thumbnail || prod.images?.[0] || '';
-      img.alt = `Style: ${prod.title}`;
+    const materialValue = materialFilter.value;
+    if (materialValue) {
+      filtered = filtered.filter(p => (p.material || "").toLowerCase() === materialValue.toLowerCase());
+    }
 
-      const title = document.createElement('h3');
-      title.textContent = prod.title;
+    const sortValue = sortSelect.value;
+    if (sortValue === "name") {
+      filtered.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortValue === "price") {
+      filtered.sort((a, b) => a.price - b.price);
+    }
 
-      const desc = document.createElement('p');
-      desc.textContent = prod.description.length > 80 ? prod.description.slice(0, 80) + '...' : prod.description;
+    filtered.forEach(product => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.tabIndex = 0;
+      card.dataset.name = product.title;
+      card.dataset.description = product.description;
+      card.dataset.price = product.price;
 
-      const price = document.createElement('p');
-      price.textContent = `$${prod.price}`;
+      card.innerHTML = `
+        <img src="${product.thumbnail}" alt="${product.title}" />
+        <h3>${product.title}</h3>
+        <p>${product.description}</p>
+        <p><strong>$${product.price}</strong></p>
+        <button class="select-btn" type="button">Select</button>
+      `;
 
-      const btn = document.createElement('button');
-      btn.textContent = 'Add to Build';
-      btn.addEventListener('click', () => {
-        const payload = {
-          id: prod.id,
-          title: prod.title,
-          basePrice: prod.price,
-          imageUrl: img.src,
-          timestamp: new Date().toISOString(),
-          customization: {
-            dimensions: dimensionInput.value || 'N/A',
-            material: materialSelect.value || 'N/A',
-            color: colorSelect.value || 'N/A',
-            hardware: hardwareSelect.value || 'N/A'
-          }
-        };
-        console.log('Added to build:', payload);
-        orderSummaryText.textContent = `Product added: ${prod.title}`;
+      card.querySelector(".select-btn").addEventListener("click", () => {
+        document.querySelectorAll(".product-card").forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        selectedProduct = product;
+        updateOrderSummary();
       });
 
-      card.appendChild(img);
-      card.appendChild(title);
-      card.appendChild(price);
-      card.appendChild(desc);
-      card.appendChild(btn);
+      card.addEventListener("keypress", e => {
+        if (e.key === "Enter") {
+          card.querySelector(".select-btn").click();
+        }
+      });
 
-      productGallery.appendChild(card);
+      productsGrid.appendChild(card);
     });
   }
 
-  // Handle search form submit
-  searchForm.addEventListener('submit', (e) => {
-    e.preventDefault(); // prevent reload
+  function updateOrderSummary() {
+    if (!selectedProduct) {
+      orderSummaryText.textContent = "No product selected";
+      return;
+    }
+
+    const dimensions = dimensionInput.value || "N/A";
+    const material = materialSelect.value || "N/A";
+    const color = colorSelect.value || "N/A";
+    const hardware = hardwareSelect.value || "N/A";
+
+    orderSummaryText.textContent =
+      `Product: ${selectedProduct.title}\n` +
+      `Description: ${selectedProduct.description}\n` +
+      `Price: $${selectedProduct.price}\n` +
+      `Dimensions: ${dimensions}\n` +
+      `Material: ${material}\n` +
+      `Color: ${color}\n` +
+      `Hardware: ${hardware}`;
+  }
+
+  addToBuildBtn.addEventListener("click", () => {
+    if (!selectedProduct) {
+      alert("Please select a product first!");
+      return;
+    }
+
+    const payload = {
+      product: selectedProduct.title,
+      description: selectedProduct.description,
+      price: selectedProduct.price,
+      dimensions: dimensionInput.value,
+      material: materialSelect.value,
+      color: colorSelect.value,
+      hardware: hardwareSelect.value,
+    };
+
+    console.log("Add to Build:", payload);
+    alert("Product added to build! (See console for details)");
+  });
+
+  searchForm.addEventListener("submit", e => {
+    e.preventDefault(); // ✅ prevents reload
     const query = searchInput.value.trim();
-    if (!query) return;
+    if (!query) {
+      statusMessage.textContent = "Please enter a search term.";
+      return;
+    }
     fetchProducts(query);
+  });
+
+  [sortSelect, materialFilter].forEach(el => {
+    el.addEventListener("input", renderProducts);
+  });
+
+  [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach(el => {
+    el.addEventListener("input", updateOrderSummary);
   });
 });
