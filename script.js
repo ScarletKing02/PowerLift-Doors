@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       products = data.products || [];
 
       if (products.length === 0) {
-        statusMessage.textContent = "It’s just us chickens here 🐔";
+        statusMessage.textContent = "It's just us chickens here 🐔";
         return;
       }
 
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderProducts();
     } catch (err) {
       console.error(err);
-      statusMessage.textContent = "Error loading products. Try again.";
+      statusMessage.textContent = "Error loading products. Try again!";
     }
   }
 
@@ -45,23 +45,14 @@ document.addEventListener("DOMContentLoaded", () => {
     productsGrid.innerHTML = "";
     let filtered = [...products];
 
-    const materialValue = materialFilter.value.toLowerCase();
+    const materialValue = materialFilter.value;
     if (materialValue) {
-      filtered = filtered.filter(p => {
-        const mat = (p.title + " " + p.description).toLowerCase();
-        if (materialValue === "wood") return mat.includes("wood");
-        if (materialValue === "metal") return mat.includes("metal") || mat.includes("steel");
-        if (materialValue === "other") return !mat.includes("wood") && !mat.includes("metal") && !mat.includes("steel");
-        return true;
-      });
+      filtered = filtered.filter(p => (p.material || "").toLowerCase() === materialValue.toLowerCase());
     }
 
     const sortValue = sortSelect.value;
-    if (sortValue === "name") {
-      filtered.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortValue === "price") {
-      filtered.sort((a, b) => a.price - b.price);
-    }
+    if (sortValue === "name") filtered.sort((a, b) => a.title.localeCompare(b.title));
+    if (sortValue === "price") filtered.sort((a, b) => a.price - b.price);
 
     filtered.forEach(product => {
       const card = document.createElement("div");
@@ -69,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
       card.tabIndex = 0;
 
       card.innerHTML = `
-        <img src="${product.thumbnail}" alt="Style: ${product.title}">
+        <img src="${product.thumbnail}" alt="Style: ${product.title}" />
         <h3>${product.title}</h3>
         <p>${product.description}</p>
         <p><strong>$${product.price}</strong></p>
@@ -145,4 +136,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   [sortSelect, materialFilter].forEach(el => el.addEventListener("input", renderProducts));
   [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach(el => el.addEventListener("input", updateOrderSummary));
+
+  
+  function lockSelect(selectElement) {
+    selectElement.addEventListener("change", () => {
+      const placeholder = selectElement.querySelector('option[value=""]');
+      if (placeholder) placeholder.disabled = true;
+    });
+  }
+
+  [materialSelect, colorSelect, hardwareSelect, materialFilter].forEach(lockSelect);
 });
