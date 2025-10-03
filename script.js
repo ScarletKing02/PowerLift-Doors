@@ -18,6 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let products = [];
   let selectedProduct = null;
 
+  function tagMaterial(product) {
+    const text = (product.title + " " + product.description).toLowerCase();
+    if (text.includes("wood")) return "Wood";
+    if (text.includes("metal") || text.includes("steel")) return "Metal";
+    return "Other";
+  }
+
   async function fetchProducts(query) {
     statusMessage.textContent = "Loading...";
     productsGrid.innerHTML = "";
@@ -27,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) throw new Error("Network response was not ok");
       const data = await res.json();
       products = data.products || [];
+
+      // assign material tags
+      products.forEach(p => p.material = tagMaterial(p));
 
       if (products.length === 0) {
         statusMessage.textContent = "It's just us chickens here 🐔";
@@ -47,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const materialValue = materialFilter.value;
     if (materialValue) {
-      filtered = filtered.filter(p => (p.material || "").toLowerCase() === materialValue.toLowerCase());
+      filtered = filtered.filter(p => p.material === materialValue);
     }
 
     const sortValue = sortSelect.value;
@@ -137,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
   [sortSelect, materialFilter].forEach(el => el.addEventListener("input", renderProducts));
   [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach(el => el.addEventListener("input", updateOrderSummary));
 
-  
   function lockSelect(selectElement) {
     selectElement.addEventListener("change", () => {
       const placeholder = selectElement.querySelector('option[value=""]');
