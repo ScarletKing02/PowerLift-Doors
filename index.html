@@ -1,109 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PowerLift Doors Illinois</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Furniture Builder</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <div class="logo-title">
-      <img src="powerlift.png" alt="PowerLift Doors Logo" class="logo" />
-      <h1>PowerLift Doors Illinois</h1>
+      <img src="logo.png" alt="Logo" class="logo" />
+      <h1>Furniture Builder</h1>
     </div>
-    <nav aria-label="Main navigation">
+    <nav>
       <a href="#">Home</a>
       <a href="#">Products</a>
       <a href="#">Contact</a>
     </nav>
   </header>
 
-  <main>
-    <!-- Controls Bar -->
-    <section class="controls-bar" aria-labelledby="controls-heading">
-      <h2 id="controls-heading" class="sr-only">Search and Filters</h2>
+  <!-- Search -->
+  <section class="search-filter">
+    <input type="text" id="searchInput" placeholder="Search products..." />
+    <button id="searchButton">Search</button>
+  </section>
 
-      <div class="search-row">
-        <label for="search-input" class="sr-only">Search door styles</label>
-        <input id="search-input" type="search" placeholder="Search door styles (e.g., wood, metal)" />
-        <button id="search-button" type="button">Search</button>
+  <!-- Results -->
+  <section id="results" aria-live="polite">
+    <p class="initial-message">Enter a search term to find products.</p>
+  </section>
 
-        <label for="sort-select">Sort:</label>
-        <select id="sort-select" aria-label="Sort results">
-          <option value="relevance">Relevance</option>
-          <option value="price-asc">Price: Low → High</option>
-          <option value="price-desc">Price: High → Low</option>
-        </select>
+  <!-- Customization -->
+  <section class="customization">
+    <h2>Customize Your Build</h2>
+    <form id="customizationForm">
+      <label>
+        Dimensions
+        <input type="text" id="dimension-input" placeholder="e.g. 6ft x 3ft" />
+      </label>
 
-        <label for="material-filter">Material:</label>
-        <select id="material-filter" aria-label="Filter by material">
-          <option value="">All</option>
+      <label>
+        Material
+        <select id="material-select">
+          <option value="">Select</option>
           <option value="Wood">Wood</option>
-          <option value="Steel">Steel</option>
-          <option value="Other">Other</option>
+          <option value="Metal">Metal</option>
+          <option value="Plastic">Plastic</option>
         </select>
-      </div>
+      </label>
 
-      <!-- status messages -->
-      <div id="status-region" aria-live="polite" class="status-region"></div>
-    </section>
+      <label>
+        Color
+        <select id="color-select">
+          <option value="">Select</option>
+          <option value="Brown">Brown</option>
+          <option value="Black">Black</option>
+          <option value="White">White</option>
+        </select>
+      </label>
 
-    <div class="layout">
-      <!-- Results / Grid -->
-      <section id="results-section" aria-labelledby="results-heading">
-        <h2 id="results-heading" class="sr-only">Search results</h2>
+      <label>
+        Hardware
+        <select id="hardware-select">
+          <option value="">Select</option>
+          <option value="Steel">Steel</option>
+          <option value="Aluminum">Aluminum</option>
+          <option value="Brass">Brass</option>
+        </select>
+      </label>
 
-        <!-- initial empty state -->
-        <div id="initial-state" class="state-box">
-          <p>Search for door styles to begin. Try terms like <strong>wood</strong>, <strong>metal</strong>, or <strong>home</strong>.</p>
-        </div>
+      <button type="submit">Update Summary</button>
+    </form>
+  </section>
 
-        <!-- loading / error / no results will replace content here -->
-        <div id="results" class="product-gallery" role="list"></div>
-      </section>
-
-      <!-- Customization Panel -->
-      <aside class="customization" aria-labelledby="customize-heading">
-        <h2 id="customize-heading">Customization</h2>
-        <form id="customization-form">
-          <fieldset>
-            <legend>Dimensions (feet)</legend>
-            <label for="width-input">Width (ft)</label>
-            <input id="width-input" type="number" min="1" max="50" step="0.5" value="8" />
-            <label for="height-input">Height (ft)</label>
-            <input id="height-input" type="number" min="1" max="30" step="0.5" value="7" />
-          </fieldset>
-
-          <fieldset>
-            <legend>Material</legend>
-            <label><input name="material" type="radio" value="Wood" checked /> Wood</label>
-            <label><input name="material" type="radio" value="Steel" /> Steel</label>
-            <label><input name="material" type="radio" value="Aluminum" /> Aluminum</label>
-            <label><input name="material" type="radio" value="Other" /> Other</label>
-          </fieldset>
-
-          <label for="color-input">Color</label>
-          <input id="color-input" type="color" value="#8B4513" />
-
-          <fieldset>
-            <legend>Hardware</legend>
-            <label><input id="hw-windows" type="checkbox" value="Windows" /> Windows</label>
-            <label><input id="hw-insulation" type="checkbox" value="Insulation" /> Insulation</label>
-            <label><input id="hw-remote" type="checkbox" value="Remote Opener" /> Remote Opener</label>
-          </fieldset>
-
-          <div class="order-summary">
-            <h3>Order Summary (Preview)</h3>
-            <p id="order-summary-text">No product selected</p>
-          </div>
-        </form>
-      </aside>
+  <!-- Order Summary -->
+  <section class="checkout">
+    <h2>Order Summary</h2>
+    <div id="orderSummary" style="display: none;">
+      <h3 id="productName"></h3>
+      <p id="productSummary"></p>
+      <p id="summaryDetails"></p>
     </div>
-  </main>
+  </section>
 
   <footer>
-    <p>&copy; 2025 PowerLift Doors Illinois</p>
+    <p>&copy; 2025 Furniture Builder</p>
   </footer>
 
   <script src="script.js"></script>
