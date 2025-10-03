@@ -18,25 +18,17 @@ document.addEventListener("DOMContentLoaded", () => {
   let products = [];
   let selectedProduct = null;
 
-  function tagMaterial(product) {
-    const text = (product.title + " " + product.description).toLowerCase();
-    if (text.includes("wood")) return "Wood";
-    if (text.includes("metal") || text.includes("steel")) return "Metal";
-    return "Other";
-  }
-
   async function fetchProducts(query) {
     statusMessage.textContent = "Loading...";
     productsGrid.innerHTML = "";
 
     try {
-      const res = await fetch(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=20`);
+      const res = await fetch(
+        `https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=20`
+      );
       if (!res.ok) throw new Error("Network response was not ok");
       const data = await res.json();
       products = data.products || [];
-
-      // assign material tags
-      products.forEach(p => p.material = tagMaterial(p));
 
       if (products.length === 0) {
         statusMessage.textContent = "It's just us chickens here 🐔";
@@ -57,14 +49,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const materialValue = materialFilter.value;
     if (materialValue) {
-      filtered = filtered.filter(p => p.material === materialValue);
+      filtered = filtered.filter(
+        (p) => (p.material || "").toLowerCase() === materialValue.toLowerCase()
+      );
     }
 
     const sortValue = sortSelect.value;
     if (sortValue === "name") filtered.sort((a, b) => a.title.localeCompare(b.title));
     if (sortValue === "price") filtered.sort((a, b) => a.price - b.price);
 
-    filtered.forEach(product => {
+    filtered.forEach((product) => {
       const card = document.createElement("div");
       card.className = "product-card";
       card.tabIndex = 0;
@@ -78,13 +72,15 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
 
       card.querySelector(".select-btn").addEventListener("click", () => {
-        document.querySelectorAll(".product-card").forEach(c => c.classList.remove("selected"));
+        document.querySelectorAll(".product-card").forEach((c) =>
+          c.classList.remove("selected")
+        );
         card.classList.add("selected");
         selectedProduct = product;
         updateOrderSummary();
       });
 
-      card.addEventListener("keypress", e => {
+      card.addEventListener("keypress", (e) => {
         if (e.key === "Enter") card.querySelector(".select-btn").click();
       });
 
@@ -127,14 +123,14 @@ document.addEventListener("DOMContentLoaded", () => {
       material: materialSelect.value,
       color: colorSelect.value,
       hardware: hardwareSelect.value,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     console.log("Add to Build:", payload);
     alert("Product added to build! (See console for details)");
   });
 
-  searchForm.addEventListener("submit", e => {
+  searchForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const query = searchInput.value.trim();
     if (!query) {
@@ -144,9 +140,14 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchProducts(query);
   });
 
-  [sortSelect, materialFilter].forEach(el => el.addEventListener("input", renderProducts));
-  [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach(el => el.addEventListener("input", updateOrderSummary));
+  [sortSelect, materialFilter].forEach((el) =>
+    el.addEventListener("input", renderProducts)
+  );
+  [materialSelect, colorSelect, hardwareSelect, dimensionInput].forEach((el) =>
+    el.addEventListener("input", updateOrderSummary)
+  );
 
+  // 🔒 Lock placeholder only for customization dropdowns
   function lockSelect(selectElement) {
     selectElement.addEventListener("change", () => {
       const placeholder = selectElement.querySelector('option[value=""]');
@@ -154,5 +155,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  [materialSelect, colorSelect, hardwareSelect, materialFilter].forEach(lockSelect);
+  [materialSelect, colorSelect, hardwareSelect].forEach(lockSelect);
 });
