@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <h3>${product.title}</h3>
         <p>${product.description}</p>
         <p><strong>$${product.price}</strong></p>
-        <button class="select-btn">Select</button>
+        <button class="select-btn" type="button">Select</button>
       `;
 
       card.querySelector(".select-btn").addEventListener("click", () => {
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   searchForm.addEventListener("submit", e => {
-    e.preventDefault();
+    e.preventDefault(); // ✅ prevents reload
     const query = searchInput.value.trim();
     if (!query) {
       statusMessage.textContent = "Please enter a search term.";
